@@ -26,7 +26,7 @@ public class CartController {
     }
 
     @PostMapping(value = {"/add"})
-    public ResponseEntity<String> addCart(@Valid @RequestBody CartDto cartDto, Errors errors) {
+    public ResponseEntity<String> addCart(@Valid @RequestBody CartDto cartDto) {
         return service.addCart(cartDto);
     }
 
