@@ -14,7 +14,7 @@
     <name>e-commrce-back</name>
     <description>e-commrce-back</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <dependency>
