@@ -1,7 +1,9 @@
 package ecommerce.service;
 
+import ecommerce.domain.entities.Product;
 import ecommerce.dto.ProductDto;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -17,4 +19,6 @@ public interface ProductInterface {
     ResponseEntity<List<ProductDto>> getAllProductsSorted(String sorting);
 
     ResponseEntity<List<ProductDto>> getProductsSorted(Integer offset, Integer pageSize, String sorting);
+
+    ResponseEntity<List<ProductDto>> getProductsFilteredAndSorted(Double from,Double to,String Category,Integer offset);
 }

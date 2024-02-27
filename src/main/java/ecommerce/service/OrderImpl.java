@@ -6,6 +6,7 @@ import ecommerce.domain.entities.Product;
 import ecommerce.domain.entities.User;
 import ecommerce.domain.repository.CategoryRepository;
 import ecommerce.domain.repository.OrderRepository;
+import ecommerce.domain.repository.ProductRepository;
 import ecommerce.domain.repository.UserRepository;
 
 import ecommerce.dto.OrderDto;
@@ -28,12 +29,14 @@ public class OrderImpl implements OrderInterface{
     OrderRepository orderRepository;
     UserRepository userRepository;
     CategoryRepository categoryRepository;
+    ProductRepository productRepository;
 
     @Autowired
-    public OrderImpl(OrderRepository orderRepository, UserRepository userRepository, CategoryRepository categoryRepository) {
+    public OrderImpl(OrderRepository orderRepository, UserRepository userRepository, CategoryRepository categoryRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     @Override
@@ -50,7 +53,10 @@ public class OrderImpl implements OrderInterface{
         User user = userRepository.findById(orderDto.getUserId()).orElseThrow(() -> new EntityNotFoundException("User is not found"));
         List<Product> products = orderDto.getProducts().stream().map(productDto ->{
             Category category = categoryRepository.findById(productDto.getCategory()).orElseThrow(() -> new EntityNotFoundException("Category is not found"));
-            return new Product(productDto,category);
+            Product product = new Product(productDto,category);
+            Product entity = productRepository.findById(productDto.getProductId()).orElseThrow(() -> new EntityNotFoundException("Product is not found"));
+            entity.setAmount(entity.getAmount()-productDto.getAmount());
+            return product;
         } ).toList();
         Order order = new Order(orderDto,products);
         if (user.getOrders().isEmpty())

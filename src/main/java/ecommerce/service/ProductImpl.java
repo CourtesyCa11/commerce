@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -94,6 +95,28 @@ public class ProductImpl implements ProductInterface{
         List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
         return new ResponseEntity<>(productDtos, HttpStatus.OK);
 
+    }
+
+    @Override
+    public ResponseEntity<List<ProductDto>> getProductsFilteredAndSorted(Double from,Double to,String Category,Integer offset) {
+        if(Category == null){
+
+            Page<Product> products = productRepository.findByActualPriceGreaterThanEqualAndActualPriceLessThanEqual( from,to,PageRequest.of(offset,15));
+            List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
+            return new ResponseEntity<>(productDtos,HttpStatus.ACCEPTED);
+        }
+        if(from == null && to == null){
+            Category category = categoryRepository.findById(Category).orElseThrow( () -> new EntityNotFoundException("Category is not found"));
+            Page<Product> products = productRepository.findByCategory(category,PageRequest.of(offset,15));
+            List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
+            return new ResponseEntity<>(productDtos,HttpStatus.ACCEPTED);
+        }
+        else {
+            Category category = categoryRepository.findById(Category).orElseThrow( () -> new EntityNotFoundException("Category is not found"));
+            Page<Product> products = productRepository.findByActualPriceGreaterThanEqualAndActualPriceLessThanEqualAndCategory(from,to,category,PageRequest.of(offset,15));
+            List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
+            return new ResponseEntity<>(productDtos,HttpStatus.ACCEPTED);
+        }
     }
 
 

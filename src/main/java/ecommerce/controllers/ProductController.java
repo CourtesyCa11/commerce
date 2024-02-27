@@ -1,9 +1,11 @@
 package ecommerce.controllers;
 
+import ecommerce.domain.entities.Product;
 import ecommerce.dto.ProductDto;
 
 import ecommerce.service.ProductInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,5 +52,11 @@ public class ProductController  {
     @GetMapping(value = {"/products/paginationAndSorted/{offset}/{pageSize}/{sortedBy}"})
     public ResponseEntity<List<ProductDto>> getProductsSorted(@PathVariable Integer offset, @PathVariable Integer pageSize, @PathVariable String sortedBy){
         return service.getProductsSorted(offset,pageSize,sortedBy);
+    }
+
+    @GetMapping(value = {"/products"})
+    public ResponseEntity<List<ProductDto>> getProductsFiltered(@RequestParam(required = false) Double from, @RequestParam(required = false) Double to,@RequestParam(required = false) String Category, @RequestParam Integer Offset){
+
+        return service.getProductsFilteredAndSorted(from,to,Category,Offset);
     }
 }
