@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImagesDto {
-    Integer productId;
-    Integer ImageId;
-    String image;
-    String colorImage;
+public class DataDto {
+    String sort;
+    String productPrices;
 }

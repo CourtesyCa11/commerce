@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductInterface {
 
@@ -20,5 +21,5 @@ public interface ProductInterface {
 
     ResponseEntity<List<ProductDto>> getProductsSorted(Integer offset, Integer pageSize, String sorting);
 
-    ResponseEntity<List<ProductDto>> getProductsFilteredAndSorted(Double from,Double to,String Category,Integer offset);
+    ResponseEntity<Map<String,Object>> getProductsFilteredAndSorted(Double from, Double to, String Category, Integer offset);
 }

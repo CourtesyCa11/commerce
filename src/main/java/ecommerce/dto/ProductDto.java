@@ -16,7 +16,8 @@ public class ProductDto {
     private Integer productId;
     private String category;
     private String name;
-    //private List<String> images;
+
+    private String images;
     private Double actualPrice;
     private Integer sale;
     private Boolean isNew;
@@ -24,6 +25,8 @@ public class ProductDto {
     private String color;
     private Integer amount;
     private Date dateSale;
+
+    private String measurements;
 
 
     public ProductDto(Product product) {
@@ -37,5 +40,7 @@ public class ProductDto {
         this.color = product.getColor();
         this.amount = product.getAmount();
         this.dateSale = product.getDateSale();
+        this.images = product.getImage();
+        this.measurements = product.getMeasurements();
     }
 }

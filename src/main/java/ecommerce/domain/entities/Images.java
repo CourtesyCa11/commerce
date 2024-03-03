@@ -17,13 +17,11 @@ public class Images {
     Integer id;
     String Image;
 
+    String colorImage;
+
     @ManyToOne
     Product product;
 
-    public Images(Integer id, String s) {
-        this.Image = s;
-        this.id = id;
-    }
 
     public Images(String s) {
         this.Image = s;

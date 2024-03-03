@@ -20,14 +20,18 @@ public class Product {
     @Column(name = "uuid")
     private Integer productId;
     private String name;
-  //  @OneToMany(mappedBy = "product")
-  //  private List<Images> images;
+   // @OneToMany(mappedBy = "product")
+   // private List<Images> images;
+
+    private String image;
     private Double actualPrice;
     private Integer sale;
     private Boolean isNew;
     private short rating;
     private String color;
     private Integer amount;
+
+    private String measurements;
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "category",referencedColumnName = "category")
     private Category category;
@@ -38,7 +42,7 @@ public class Product {
 
 
     public Product(Integer productId, String name, Double actualPrice, Integer sale, Boolean isNew,
-                   short rating, String color, Integer amount, Category category, Date dateSale) {
+                   short rating, String color, Integer amount, Category category, Date dateSale, String measurements, String image) {
         this.productId = productId;
         this.name = name;
         this.actualPrice = actualPrice;
@@ -49,6 +53,8 @@ public class Product {
         this.amount = amount;
         this.category = category;
         this.dateSale = dateSale;
+        this.measurements = measurements;
+        this.image = image;
     }
 
     public Product(ProductDto productDto, Category category) {
@@ -62,5 +68,22 @@ public class Product {
         this.amount = productDto.getAmount();
         this.category = category;
         this.dateSale = productDto.getDateSale();
+        this.measurements = productDto.getMeasurements();
+        this.image = productDto.getImages();
+    }
+
+    public void setAll(ProductDto productDto, Category category) {
+        this.productId = productDto.getProductId();
+        this.name = productDto.getName();
+        this.actualPrice = productDto.getActualPrice();
+        this.sale = productDto.getSale();
+        this.isNew = productDto.getIsNew();
+        this.rating = productDto.getRating();
+        this.color = productDto.getColor();
+        this.amount = productDto.getAmount();
+        this.category = category;
+        this.dateSale = productDto.getDateSale();
+        this.measurements = productDto.getMeasurements();
+        this.image = productDto.getImages();
     }
 }

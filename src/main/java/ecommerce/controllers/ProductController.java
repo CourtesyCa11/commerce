@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -55,7 +56,7 @@ public class ProductController  {
     }
 
     @GetMapping(value = {"/products"})
-    public ResponseEntity<List<ProductDto>> getProductsFiltered(@RequestParam(required = false) Double from, @RequestParam(required = false) Double to,@RequestParam(required = false) String Category, @RequestParam Integer Offset){
+    public ResponseEntity<Map<String,Object>> getProductsFiltered(@RequestParam(required = false) Double from, @RequestParam(required = false) Double to, @RequestParam(required = false) String Category, @RequestParam Integer Offset){
 
         return service.getProductsFilteredAndSorted(from,to,Category,Offset);
     }

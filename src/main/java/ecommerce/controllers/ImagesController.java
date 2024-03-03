@@ -40,4 +40,10 @@ public class ImagesController   {
     public ResponseEntity<List<ImagesDto>> getAllImages() {
         return service.getAllImages();
     }
+
+
+    @GetMapping(value = "/images/byProductId/{ProductId}")
+    public ResponseEntity<List<ImagesDto>> getImagesByProduct(@PathVariable Integer ProductId){
+        return service.getImagesByProduct(ProductId);
+    }
 }

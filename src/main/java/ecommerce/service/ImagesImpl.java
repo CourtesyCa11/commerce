@@ -32,7 +32,7 @@ public class ImagesImpl implements ImagesInterface{
     @Transactional
     public ResponseEntity<String> addImage(ImagesDto image) {
         Product product = productRepository.findById(image.getProductId()).orElseThrow(()-> new EntityNotFoundException("Product is not found"));
-        Images images = new Images(image.getImageId(), image.getImage(),product);
+        Images images = new Images(image.getImageId(), image.getImage(),image.getColorImage(),product);
         imagesRepository.save(images);
         return new ResponseEntity<>("Image successfully is added ", HttpStatus.CREATED);
     }
@@ -58,14 +58,22 @@ public class ImagesImpl implements ImagesInterface{
     @Override
     public ResponseEntity<ImagesDto> getImage(Integer imageId) {
         Images images = imagesRepository.findById(imageId).orElseThrow(()-> new EntityNotFoundException("Image is not found"));
-        ImagesDto dto = new ImagesDto(images.getId(), Math.toIntExact(images.getProduct().getProductId()),images.getImage());
+        ImagesDto dto = new ImagesDto(images.getId(), images.getProduct().getProductId(),images.getImage(), images.getColorImage());
         return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<List<ImagesDto>> getAllImages() {
         List<Images> imagesEntity = imagesRepository.findAll();
-        List<ImagesDto> dtos = imagesEntity.stream().map(images -> new ImagesDto(images.getId(),Math.toIntExact(images.getProduct().getProductId()),images.getImage())).toList();
+        List<ImagesDto> dtos = imagesEntity.stream().map(images -> new ImagesDto(images.getProduct().getProductId(),images.getId(),images.getImage(),images.getColorImage())).toList();
+        return new ResponseEntity<>(dtos,HttpStatus.ACCEPTED);
+    }
+
+    @Override
+    public ResponseEntity<List<ImagesDto>> getImagesByProduct(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow(()-> new EntityNotFoundException("Product is not found"));
+        List<Images> imageEntity = imagesRepository.findByproduct(product);
+        List<ImagesDto> dtos = imageEntity.stream().map(images -> new ImagesDto(images.getProduct().getProductId(),images.getId(),images.getImage(),images.getColorImage())).toList();
         return new ResponseEntity<>(dtos,HttpStatus.ACCEPTED);
     }
 }

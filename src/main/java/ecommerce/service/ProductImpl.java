@@ -20,7 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -53,8 +55,8 @@ public class ProductImpl implements ProductInterface{
         if(productRepository.existsById(product.getProductId()))
             return new ResponseEntity<>("this id already exists", HttpStatus.CONFLICT);
         Product productEntity = new Product(product.getProductId(), product.getName(), product.getActualPrice(),product.getSale(),
-                product.getIsNew(),product.getRating(),product.getColor(),product.getAmount(),category,product.getDateSale());
-        log.error(product.getProductId().toString());
+                product.getIsNew(),product.getRating(),product.getColor(),product.getAmount(),category,product.getDateSale(), product.getMeasurements(), product.getImages());
+        //log.error(product.getProductId().toString());
        productRepository.save(productEntity);
         return new ResponseEntity<>("Product is successfully added", HttpStatus.CREATED);
     }
@@ -69,7 +71,12 @@ public class ProductImpl implements ProductInterface{
     @Override
     @Transactional
     public ResponseEntity<String> updateProduct(ProductDto product) {
-        return null;
+            if(!productRepository.existsById(product.getProductId()))
+                return new ResponseEntity<>("Product is not found", HttpStatus.NOT_FOUND);
+            Product entity = productRepository.findById(product.getProductId()).orElseThrow(() -> new EntityNotFoundException("Order is not found"));
+        Category category = categoryRepository.findById(product.getCategory()).orElseThrow( () -> new EntityNotFoundException("Category is not found"));
+            entity.setAll(product,category);
+        return new ResponseEntity<>("Product is successfully updated",HttpStatus.OK);
     }
 
     @Override
@@ -98,25 +105,34 @@ public class ProductImpl implements ProductInterface{
     }
 
     @Override
-    public ResponseEntity<List<ProductDto>> getProductsFilteredAndSorted(Double from,Double to,String Category,Integer offset) {
-        if(Category == null){
+    public ResponseEntity<Map<String,Object>> getProductsFilteredAndSorted(Double from, Double to, String Category, Integer offset) {
 
+        if(Category == null){
             Page<Product> products = productRepository.findByActualPriceGreaterThanEqualAndActualPriceLessThanEqual( from,to,PageRequest.of(offset,15));
-            List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
-            return new ResponseEntity<>(productDtos,HttpStatus.ACCEPTED);
+            return getMapResponseEntity(products);
         }
-        if(from == null && to == null){
+        else if(from == null && to == null){
             Category category = categoryRepository.findById(Category).orElseThrow( () -> new EntityNotFoundException("Category is not found"));
             Page<Product> products = productRepository.findByCategory(category,PageRequest.of(offset,15));
-            List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
-            return new ResponseEntity<>(productDtos,HttpStatus.ACCEPTED);
+            return getMapResponseEntity(products);
         }
         else {
             Category category = categoryRepository.findById(Category).orElseThrow( () -> new EntityNotFoundException("Category is not found"));
             Page<Product> products = productRepository.findByActualPriceGreaterThanEqualAndActualPriceLessThanEqualAndCategory(from,to,category,PageRequest.of(offset,15));
-            List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
-            return new ResponseEntity<>(productDtos,HttpStatus.ACCEPTED);
+            return getMapResponseEntity(products);
         }
+    }
+
+    private ResponseEntity<Map<String, Object>> getMapResponseEntity(Page<Product> products) {
+        List<ProductDto> productDtos = products.stream().map(ProductDto::new).toList();
+        Map<String,Object> response = new HashMap<>();
+        response.put("Products",productDtos);
+        response.put("Current Page",products.getNumber());
+        response.put("Total items", products.getTotalElements());
+        response.put("Total Pages", products.getTotalPages());
+
+
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
 

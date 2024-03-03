@@ -13,4 +13,6 @@ public interface ImagesInterface {
     ResponseEntity<String> updateImage(ImagesDto imagesDto);
     ResponseEntity<ImagesDto> getImage(Integer imageId);
     ResponseEntity<List<ImagesDto>> getAllImages();
+
+    ResponseEntity<List<ImagesDto>> getImagesByProduct(Integer productId);
 }
